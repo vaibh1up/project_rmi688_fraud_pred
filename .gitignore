@@ -6,6 +6,7 @@ data/
 input/
 output/
 references/
+renv/library
 *.csv
 *.xlsx
 .httr-oauth
