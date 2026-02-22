@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+*.RData
+data/
+input/
+output/
+references/
+*.csv
+*.xlsx
+.httr-oauth
+.DS_Store
+.quarto
