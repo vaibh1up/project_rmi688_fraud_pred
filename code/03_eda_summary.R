@@ -71,7 +71,7 @@ fmt_num <- function(x) {
   if (is.na(x)) {
     return('NA')
   }
-  sprintf('%.4f', x)
+  sprintf('%.2f', x)
 }
 
 header <- paste0(
@@ -84,10 +84,25 @@ escape_tex <- function(x) {
   gsub("_", "\\_", x, fixed = TRUE)
 }
 
-rows <- apply(stats, 1, function(r) {
+grouped_vars <- list(
+  "Identifiers" = c("Claim_ID"),
+  "Demographic Features" = c("Age", "Gender"),
+  "Policy Characteristics" = c("Policy_Inception_To_Claim", "Years_With_Company", "Policy_Coverage_Type", "Annual_Mileage", "Region"),
+  "Incident and Claim Details" = c(
+    "Claim_Amount", "Vehicle_Value", "Claim_Amount_Relative", "Number_of_Claimants",
+    "Time_of_Incident", "Incident_Day", "Claim_Delay_Days", "Prior_Claims",
+    "Vehicle_Age", "Repair_Cost", "Claim_Reason", "Fraudulent"
+  )
+)
+
+stats_lookup <- stats
+rownames(stats_lookup) <- stats_lookup$variable
+
+make_row <- function(var) {
+  r <- stats_lookup[var, ]
   sprintf(
     "%s & %s & %s & %s & %s & %s & %s \\\\ ",
-    escape_tex(r[['variable']]),
+    escape_tex(var),
     fmt_num(as.numeric(r[['mean']])),
     fmt_num(as.numeric(r[['median']])),
     fmt_num(as.numeric(r[['min']])),
@@ -95,7 +110,18 @@ rows <- apply(stats, 1, function(r) {
     fmt_num(as.numeric(r[['p25']])),
     fmt_num(as.numeric(r[['p75']]))
   )
-})
+}
+
+rows <- c()
+for (grp in names(grouped_vars)) {
+  rows <- c(rows, sprintf("\\multicolumn{7}{l}{\\textit{%s}} \\\\", grp))
+  for (var in grouped_vars[[grp]]) {
+    if (var %in% stats$variable) {
+      rows <- c(rows, make_row(var))
+    }
+  }
+}
+
 footer <- "\\bottomrule\\end{tabular}\\end{table}\n"
 
 cat(header, paste(rows, collapse = "\n"), "\n", footer, file = summary_tex, sep = "")

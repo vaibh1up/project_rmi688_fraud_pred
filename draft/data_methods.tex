@@ -1,11 +1,21 @@
-\subsection*{Data}
-The dataset contains policyholder demographics, claim attributes, and the binary target variable indicating fraud. Cleaning steps included trimming whitespace in character fields, converting categorical fields to factors, and removing rows with any missing values. Duplicate rows were not removed. Summary statistics are reported in Table~\ref{tab:eda_summary}. The target is imbalanced, with most observations labeled non-fraud.
+\subsection{Data}
+The dataset contains policyholder demographics, policy characteristics, and incident-level claim attributes, with a binary target indicating fraud. Cleaning steps were chosen to improve model robustness and operational interpretability: whitespace trimming stabilizes categorical encoding, factor conversion ensures consistent handling of discrete risk segments, and removing missing values prevents silent bias in model fitting. Duplicate rows were not removed to preserve the natural frequency of observed cases.
+
+Table~\ref{tab:eda_summary} summarizes the distributional profile of the variables. The summary indicates a broad range of claim sizes and delays, suggesting heterogeneity in claims behavior that is consistent with fraud risk segmentation. The imbalanced target distribution reinforces the need for threshold-aware optimization rather than default classification rules.
 
 \input{../output/tables/eda_summary.tex}
 
-The cost-benefit matrix guiding optimization is shown in Table~\ref{tab:cost_benefit}.
+A second implication of the summary statistics is the presence of risk amplifiers such as prior claims, longer delays, and higher relative claim amounts, which are well-suited to nonlinear decision boundaries. This motivates comparing linear and nonlinear model families rather than relying on a single approach.
+
+The cost-benefit matrix guiding optimization is shown in Table~\ref{tab:cost_benefit}. It reflects a risk economics lens in which missing fraud creates a substantially larger financial and regulatory impact than inconveniencing legitimate customers.
 
 \input{../output/tables/cost_benefit.tex}
 
-\subsection*{Methods}
-We fit three models: Logistic Regression (interpretable baseline), Decision Tree (nonlinear splits), and Random Forest (ensemble for higher predictive power). Each model was trained on an 80/20 stratified split. For each model, thresholds from 0.01 to 0.50 were evaluated, and the threshold maximizing total business payoff was selected.
+The table implies an asymmetric risk profile: a single missed fraud event can outweigh many false alarms. This asymmetry reframes model evaluation toward total value rather than raw accuracy, which is especially important in imbalanced datasets.
+
+The optimization objective is explicitly defined as:
+$$Total\ Business\ Payoff = 10(TP) + 100(TN) - 50(FP) - 500(FN)$$
+This asymmetric structure implies that a False Negative is ten times more damaging than a False Positive, which materially changes the optimal operating point relative to accuracy-based selection.
+
+\subsection{Methods}
+Three models were evaluated to reflect a spectrum of interpretability and nonlinearity. Logistic Regression provides a transparent baseline and stable behavior under class imbalance. Decision Trees capture nonlinear rules and interactions that often reflect operational heuristics. Random Forests aggregate many trees to reduce variance and improve predictive power, at the expense of interpretability. An 80/20 stratified split preserves the fraud rate in both training and test sets. For each model, thresholds from 0.01 to 0.50 were evaluated to identify the maximum total business payoff under the stated objective.

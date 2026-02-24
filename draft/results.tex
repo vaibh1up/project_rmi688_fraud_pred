@@ -1,5 +1,20 @@
-Logistic Regression provides interpretable coefficients and stable behavior, but may underfit nonlinear relationships. The Decision Tree captures nonlinear splits and interactions, though it can be unstable and sensitive to data variation. The Random Forest aggregates many trees to improve generalization, at the cost of interpretability.
+Logistic Regression exhibits a smooth and predictable response to changing thresholds, which is consistent with its linear decision boundary. It tends to prioritize stability and interpretability, but can under-capture nonlinear fraud patterns when the feature space is complex. This behavior produces a payoff curve that changes steadily rather than abruptly.
 
-Model performance and optimal thresholds under the payoff criterion are summarized in Table~\ref{tab:model_tournament}.
+The Decision Tree shows sharper shifts in payoff as thresholds cross internal split points. This is useful when fraud behavior is driven by a few dominant rules, but it can lead to volatility as small threshold changes flip entire segments of predictions. The resulting payoff frontier typically includes localized peaks and valleys, reflecting its sensitivity to threshold choice.
+
+The Random Forest stabilizes these dynamics by aggregating many trees, yielding more consistent payoffs across adjacent thresholds. While less interpretable, it is often more resilient to noisy predictors and reduces the risk of overreacting to individual rules. This stability is valuable for operational deployment where threshold adjustments are frequent.
+
+Table~\ref{tab:model_tournament} presents the optimal thresholds and confusion metrics for each model under the payoff criterion. The payoff-maximizing thresholds differ from the conventional 0.5, demonstrating that value-based optimization is required when the objective is economic rather than purely statistical. The table also shows that higher sensitivity alone does not guarantee higher payoff because false positives carry material costs.
 
 \input{../output/tables/model_tournament_results.tex}
+
+The payoff-threshold frontier is visualized in Figure~\ref{fig:payoff_threshold}. As seen in Figure~\ref{fig:payoff_threshold}, the payoff curve for the selected model reaches its peak within a moderate threshold band, while more aggressive settings sacrifice specificity and reduce net value. This reinforces the importance of treating threshold selection as an optimization problem rather than a fixed rule.
+
+The relative ordering of the curves also indicates how each model trades off fraud capture against false alarms. Models with steeper payoff declines at low thresholds are more sensitive to false positives, while flatter curves indicate resilience in operational cost. These patterns are critical for management because they define how performance will shift under policy changes or volume shocks.
+
+\begin{figure}[ht]\centering
+\includegraphics[width=0.9\linewidth]{../output/plots/payoff_threshold.png}
+\caption{Payoff-Threshold Frontier by Model}\label{fig:payoff_threshold}
+\end{figure}
+
+As seen in Figure~\ref{fig:payoff_threshold}, the separation between curves provides a practical margin of safety: a wider gap suggests that the selected model remains economically superior even if thresholds drift or operational conditions change. This is valuable for governance because it reduces the risk that small policy adjustments will overturn the recommendation.

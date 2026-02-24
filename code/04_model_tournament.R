@@ -6,6 +6,7 @@ options(stringsAsFactors = FALSE)
 suppressPackageStartupMessages({
   library(tidymodels)
   library(randomForest)
+  library(ggplot2)
 })
 
 # Purpose: Load cleaned data with error handling
@@ -160,7 +161,7 @@ header <- paste0(
 )
 rows <- apply(results_tbl, 1, function(r) {
   sprintf(
-    "%s & %.2f & %.0f & %d & %d & %d & %d & %.4f & %.4f \\\\ ",
+    "%s & %.2f & %.2f & %d & %d & %d & %d & %.2f & %.2f \\\\ ",
     r[['Model']], as.numeric(r[['Threshold']]), as.numeric(r[['Payoff']]),
     as.integer(r[['TP']]), as.integer(r[['TN']]), as.integer(r[['FP']]), as.integer(r[['FN']]),
     as.numeric(r[['Sensitivity']]), as.numeric(r[['Specificity']])
@@ -168,8 +169,17 @@ rows <- apply(results_tbl, 1, function(r) {
 })
 footer <- "\\bottomrule\\end{tabular}\\end{table}\n"
 
-cat(header, paste(rows, collapse = "\n"), "\n", footer, file = output_file, sep = "")
-write.csv(results_tbl, output_csv, row.names = FALSE)
+tryCatch({
+  cat(header, paste(rows, collapse = "\n"), "\n", footer, file = output_file, sep = "")
+}, error = function(e) {
+  message('ERROR: failed to write results table: ', e$message)
+})
+
+tryCatch({
+  write.csv(results_tbl, output_csv, row.names = FALSE)
+}, error = function(e) {
+  message('ERROR: failed to write results CSV: ', e$message)
+})
 
 # Purpose: Report results
 cat('MODEL_RESULTS\n')
@@ -187,3 +197,31 @@ cat('RF_SENS_SPEC:', rf_eval$sensitivity, rf_eval$specificity, '\n')
 
 cat('RESULTS_TABLE_SAVED:', output_file, '\n')
 cat('RESULTS_CSV_SAVED:', output_csv, '\n')
+
+# Purpose: Save payoff-threshold curve plot
+plot_dir <- file.path('output', 'plots')
+if (!dir.exists(plot_dir)) {
+  dir.create(plot_dir, recursive = TRUE)
+}
+plot_file <- file.path(plot_dir, 'payoff_threshold.png')
+
+plot_df <- data.frame(
+  threshold = rep(thresholds, 3),
+  payoff = c(logit_metrics$payoff, cart_metrics$payoff, rf_metrics$payoff),
+  model = rep(c('Logistic Regression', 'Decision Tree', 'Random Forest'), each = length(thresholds))
+)
+
+payoff_plot <- ggplot(plot_df, aes(x = threshold, y = payoff, color = model)) +
+  geom_line(linewidth = 1) +
+  scale_color_manual(values = c('Logistic Regression' = '#1b9e77', 'Decision Tree' = '#d95f02', 'Random Forest' = '#7570b3')) +
+  labs(
+    title = 'Payoff-Threshold Frontier by Model',
+    x = 'Threshold',
+    y = 'Total Business Payoff',
+    color = 'Model'
+  ) +
+  theme_minimal()
+
+ggsave(plot_file, payoff_plot, width = 9, height = 6, dpi = 150)
+
+cat('PAYOFF_PLOT_SAVED:', plot_file, '\n')

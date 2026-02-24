@@ -1,0 +1,9 @@
+\begin{titlepage}
+\centering
+{\LARGE Fraud Risk Optimization and Model Tournament}\\[1.5em]
+{\large Codex Agent}\\[0.5em]
+{\large February 24, 2026}\\[2em]
+\begin{abstract}
+This report evaluates three fraud-detection models under a payoff framework that explicitly prices the economic impact of correct and incorrect decisions. The analysis demonstrates that optimal thresholds differ materially from the default 0.5 and that business value is maximized by a model that balances high fraud capture with controlled false-alarm rates. Evidence indicates that the payoff frontier is sensitive to threshold shifts, with more aggressive settings quickly eroding specificity and net value. The recommended model achieves the highest total business payoff while maintaining operational stability, suggesting it can scale in production without excessive investigative burden. A what-if analysis shows that changes to penalty weights, particularly a higher false-negative cost, would shift the optimal operating point toward greater sensitivity. The report concludes with a recommendation aligned to risk economics and a framework for ongoing re-optimization as cost structures, fraud prevalence, and regulatory expectations evolve. The results are intended to support management decisions on investigative capacity, customer experience policies, and ongoing model governance.
+\end{abstract}
+\end{titlepage}
