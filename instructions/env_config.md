@@ -6,6 +6,7 @@
   - Modeling: `tidymodels`, `randomForest`
   - Econometrics/Tables: `fixest`, `modelsummary`
   - LaTeX Output: `stargazer` or `xtable`
+  - Plotting: always use ggplot
 
 ## 2. Package Installation Fail-safe (Bootstrap)
 - **Primary Method:** Use `pacman::p_load()` for all library loading.

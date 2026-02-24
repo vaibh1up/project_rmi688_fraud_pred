@@ -161,7 +161,7 @@ titlepage_text <- paste0(
   "\\end{titlepage}\n"
 )
 
-cat(titlepage_text, file = file.path('draft', 'titlepage.tx'))
+cat(titlepage_text, file = file.path('draft', 'titlepage.tex'))
 
 main_text <- paste0(
   "\\documentclass{article}\n",
@@ -172,7 +172,7 @@ main_text <- paste0(
   "\\geometry{margin=1in}\n",
   "\\begin{document}\n",
   "\\linespread{1.5}\\selectfont\n",
-  "\\input{titlepage.tx}\n",
+  "\\input{titlepage.tex}\n",
   "\\section{Introduction}\\input{introduction}\n",
   "\\section{Data and Methods}\\input{data_methods}\n",
   "\\section{Results}\\input{results}\n",
@@ -188,7 +188,7 @@ cat('REPORT_FILES_SAVED:', file.path('draft', 'data_methods.tex'), '\n')
 cat('REPORT_FILES_SAVED:', file.path('draft', 'results.tex'), '\n')
 cat('REPORT_FILES_SAVED:', file.path('draft', 'recommend.tex'), '\n')
 cat('REPORT_FILES_SAVED:', file.path('draft', 'main.tex'), '\n')
-cat('REPORT_FILES_SAVED:', file.path('draft', 'titlepage.tx'), '\n')
+cat('REPORT_FILES_SAVED:', file.path('draft', 'titlepage.tex'), '\n')
 
 # Purpose: Validate executive summary length and LaTeX escaping
 word_count <- length(strsplit(gsub("[[:space:]]+", " ", exec_summary_text), " ")[[1]])
@@ -197,7 +197,7 @@ if (word_count < 150) {
 }
 
 check_files <- c(
-  file.path('draft', 'titlepage.tx'),
+  file.path('draft', 'titlepage.tex'),
   file.path('draft', 'introduction.tex'),
   file.path('draft', 'data_methods.tex'),
   file.path('draft', 'results.tex'),
