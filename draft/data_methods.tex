@@ -1,0 +1,11 @@
+\subsection*{Data}
+The dataset contains policyholder demographics, claim attributes, and the binary target variable indicating fraud. Cleaning steps included trimming whitespace in character fields, converting categorical fields to factors, and removing rows with any missing values. Duplicate rows were not removed. Summary statistics are reported in Table~\ref{tab:eda_summary}. The target is imbalanced, with most observations labeled non-fraud.
+
+\input{../output/tables/eda_summary.tex}
+
+The cost-benefit matrix guiding optimization is shown in Table~\ref{tab:cost_benefit}.
+
+\input{../output/tables/cost_benefit.tex}
+
+\subsection*{Methods}
+We fit three models: Logistic Regression (interpretable baseline), Decision Tree (nonlinear splits), and Random Forest (ensemble for higher predictive power). Each model was trained on an 80/20 stratified split. For each model, thresholds from 0.01 to 0.50 were evaluated, and the threshold maximizing total business payoff was selected.

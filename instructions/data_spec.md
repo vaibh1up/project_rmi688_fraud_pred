@@ -38,6 +38,6 @@ False Positive (FP),Cost,VFP= -50,False Alarm; Cost of customer support and fric
 False Negative (FN),Cost,VFN= -500,Missed Fraud; Full loss of funds plus regulatory risk.
 
 ##4. optimization logic
-$$U = (TP \times VTP) + (TN \times VTN) - (FP \times VFP) - (FN \times VFN)$$
+$$business payoff = (TP \times VTP) + (TN \times VTN) + (FP \times VFP) + (FN \times VFN)$$
 
 
