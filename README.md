@@ -1,4 +1,4 @@
-# RMI688: Fraud Prediction Project (with Coding Agents)
+# RMI688: Fraud Prediction Project (with AI Coding Agents)
 
 Welcome! This project teaches you how to complete a real data science workflow using a coding agent (such as Codex or Claude Code) **even if you are new to programming**.
 
@@ -6,7 +6,7 @@ This README is designed to be simple, practical, and step-by-step.
 
 ---
 
-## 1) Project Title + One-Sentence Purpose
+## 1) Project Title
 
 **Project:** Fraud Prediction & Business Payoff Optimization in R
 
